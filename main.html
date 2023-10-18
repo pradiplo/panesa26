@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      transform: rotate(0deg);
+      transform-origin: center;
+      /* comment out these lines */
+      /* background-image: url('./assets/bg1.jpg'); */
+      /* background-size: cover; */
+    }
+  </style>
+</head>
+<body>
+<canvas id="game" width="800" height="600"></canvas>
+
+<script>
+  const canvas = document.getElementById('game');
+  const ctx = canvas.getContext('2d');
+  
+  let x = 300;
+  let y = 0;
+  let speed = 0;
+  let jumping = false;
+  let jumpHeight =35;
+  let obstacleX = 800;
+  let obstacleWidth = 10;
+  
+  let obstacleHeight = 30;
+  let score = 0;
+  let gameOver = false;  
+  let backgroundX = 0;
+
+  function draw() {
+
+    backgroundX -= 1;
+    ctx.clearRect(0,0, canvas.width,canvas.height);
+    ctx.fillStyle = 'white';    
+    ctx.fillRect(0, canvas.height - 120, canvas.width, 1);
+    
+    //ctx.fillStyle = 'black';
+    //ctx.save();
+    //ctx.translate(x + 80, y + 25);
+    //ctx.fillRect(-25, -25, 50, 50);
+    //ctx.fillRect(-25, -25, 50, 50);
+    //ctx.restore();
+    
+    const image = new Image();
+    image.src = './assets/skater.png';
+    const image2 = new Image();
+    image2.src = './assets/bg1.jpg';
+    
+    ctx.drawImage(image2, backgroundX, 0, canvas.width, canvas.height);
+    ctx.drawImage(image2, backgroundX + canvas.width, 0, canvas.width, canvas.height);
+    
+    if (backgroundX <= -canvas.width) {
+     backgroundX = 0;
+    }
+
+    // ctx.fillRect(obstacleX + backgroundX, canvas.height - obstacleHeight - 50, obstacleWidth, obstacleHeight);
+    ctx.drawImage(image, x, y-300, 250, 300)
+
+    const obstacleImage = new Image();
+    obstacleImage.src = './assets/obstacle.png';
+    ctx.drawImage(obstacleImage, obstacleX, canvas.height - obstacleHeight - 220, 200, 200);
+    //ctx.fillStyle = 'red';
+    //ctx.fillRect(obstacleX, canvas.height - obstacleHeight - 120, obstacleWidth, obstacleHeight);
+    //ctx.drawImage(image2,obstacleX, canvas.height - obstacleHeight - 50, canvasWidth, canvasHeight);
+    
+    ctx.fillStyle = 'black';
+    ctx.font = '30px Arial';
+    ctx.fillText(`Score: ${score}`, 30, 80);
+  }
+
+  function update() {
+  if (gameOver) {
+    return;
+  }
+  if (obstacleX < -obstacleWidth) {
+    obstacleX = canvas.width;
+    score++;
+  }
+  obstacleX -= 5;
+  if (jumping) {
+    y -= speed;
+    speed -= 1;
+    if (y > canvas.height - 100) {
+      jumping = false;
+      y = canvas.height - 100;
+      speed = 0;
+    }
+  } else {
+    y = canvas.height - 100;
+  }
+
+
+  if (gameOver) {
+    return;
+  }
+  
+  checkCollision(); // Call the checkCollision function
+  
+  //  gameOver = true;
+  //  alert(`SELAMAT ULANG TAUN PANESA! PENCET ENTER KALO MAU MAIN LAGI`);
+  
+
+
+}
+function checkCollision() {
+  if (x + 150 >= obstacleX && x <= obstacleX + 100 && y >= canvas.height - obstacleHeight - 100) {
+    gameOver = true;
+    setTimeout(() => {
+      alert("SELAMAT ULANG TAUN PANESA! UMUR 26 COBA MINIMAL SAMPE SKORNYA 26!!");
+      document.location.reload();
+    }, 100);
+  }
+}
+  function jump() {
+    if (!jumping) {
+      jumping = true;
+      speed = jumpHeight;
+    }
+  }
+
+  setInterval(() => {
+    draw();
+    update();
+  }, 20);
+
+  document.addEventListener('keydown', (event) => {
+    if (event.code === 'Space') {
+      jump();
+    }
+  });
+
+  document.addEventListener('keydown', (event) => {
+  if (event.code === 'Enter') {
+    // Reset the game state to its initial values
+    x = 300;
+    y = 0;
+    speed = 0;
+    jumping = false;
+    obstacleX = 800;
+    score = 0;
+    gameOver = false;
+    backgroundX = 0
+  }
+});
+</script>
+
+</rewritten_selection_following_instructions>
+</body>
+</html>
